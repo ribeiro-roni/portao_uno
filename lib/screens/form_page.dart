@@ -44,7 +44,6 @@ class _FormpageState extends State<Formpage> with ValidationsMixin {
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
         title: const Text('Registro de Veículos'),
       ),
       body: SingleChildScrollView(
@@ -103,10 +102,10 @@ class _FormpageState extends State<Formpage> with ValidationsMixin {
                       }
                     }
                   },
-                  icon: const Icon(Icons.add_box),
-                  label: const Text('Registrar Nova Entrada'),
+                  icon: const Icon(Icons.add_box,color: Colors.white,),
+                  label: const Text('Registrar Nova Entrada',style: TextStyle(color: Colors.white),),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: Colors.blue,
                     minimumSize: const Size(double.infinity, 50),
                   ),
                 ),

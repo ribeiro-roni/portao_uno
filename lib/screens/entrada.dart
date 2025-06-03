@@ -166,8 +166,8 @@ class _EntradaPageState extends State<EntradaPage> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: carregando ? null : confirmarEntrada,
-                child: carregando ? const CircularProgressIndicator() : const Text('Confirmar Entrada'),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                child: carregando ? const CircularProgressIndicator() : const Text('Confirmar Entrada',style: TextStyle(color: Colors.white),),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
               ),
             ],
           ],
