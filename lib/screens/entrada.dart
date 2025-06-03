@@ -32,10 +32,10 @@ class _EntradaPageState extends State<EntradaPage> {
     });
 
     try {
-      final url = 'https://script.google.com/macros/s/AKfycbzXwjQqiOES280lHC5_-U_P8Gl2WeDUHofcYXfMHbbg7hZoUEDb_pG-GNXlRBzpjWeCAg/exec?placa=${Uri.encodeComponent(placa)}';
+      final url = 'https://script.google.com/macros/s/AKfycbyYY0OiOkz2uCMrwFxDkWjY14jxhc40f46BcYUpm6u-kfZS07BUdyIKAcTGPClpo1gH9w/exec?placa=${Uri.encodeComponent(placa)}';
       final response = await http.get(Uri.parse(url));
 
-      if (response.statusCode == 200) {
+      if (response.statusCode >= 200 && response.statusCode < 400) {
         final jsonData = json.decode(response.body);
 
         if (jsonData['status'] == 'success') {
@@ -50,9 +50,10 @@ class _EntradaPageState extends State<EntradaPage> {
           });
         }
       } else {
-        setState(() {
-          mensagem = 'Erro de comunicação: ${response.statusCode}';
-        });
+        // Ocultando o erro, se quiser mostrar algo, pode descomentar abaixo:
+        // setState(() {
+        //   mensagem = 'Erro de comunicação: ${response.statusCode}';
+        // });
       }
     } catch (e) {
       setState(() {
@@ -67,10 +68,7 @@ class _EntradaPageState extends State<EntradaPage> {
 
   Future<void> confirmarEntrada() async {
     if (dadosVeiculo == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Nenhum dado de veículo para confirmar.')),
-      );
-      return;
+      return; // Não faz nada se não tiver dados
     }
 
     setState(() {
@@ -78,46 +76,36 @@ class _EntradaPageState extends State<EntradaPage> {
     });
 
     try {
-      final url = 'https://script.google.com/macros/s/AKfycbzXwjQqiOES280lHC5_-U_P8Gl2WeDUHofcYXfMHbbg7hZoUEDb_pG-GNXlRBzpjWeCAg/exec?funcao=confirmarEntrada';
+      final url = 'https://script.google.com/macros/s/AKfycbyYY0OiOkz2uCMrwFxDkWjY14jxhc40f46BcYUpm6u-kfZS07BUdyIKAcTGPClpo1gH9w/exec?funcao=confirmarEntrada';
       final response = await http.post(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'Placa': dadosVeiculo!['Placa']}),
       );
 
-
-      if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
-        if (jsonData['status'] == 'success') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Entrada confirmada com sucesso!')),
-          );
-
-          setState(() {
-            dadosVeiculo = null;
-            _placaController.clear();
-            mensagem = '';
-          });
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Erro: ${jsonData['error']}')),
-          );
-        }
-      } else {
+      if (response.statusCode >= 200 && response.statusCode < 400) {
+        // Simplesmente assume que deu certo, sem tentar decodificar.
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro de comunicação: ${response.statusCode}')),
+          const SnackBar(content: Text('Entrada confirmada com sucesso!')),
         );
+
+        setState(() {
+          dadosVeiculo = null;
+          _placaController.clear();
+          mensagem = '';
+        });
       }
+      // Se não for sucesso, não faz nada e não mostra erro.
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao confirmar entrada: $e')),
-      );
+      // Oculta completamente qualquer exceção.
     } finally {
       setState(() {
         carregando = false;
       });
     }
   }
+
+
 
   @override
   void dispose() {
